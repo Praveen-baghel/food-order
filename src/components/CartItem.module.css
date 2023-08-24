@@ -1,0 +1,43 @@
+.mainLi:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #471212; /* Border color */
+}
+.mainLi {
+  font-weight: bold;
+  position: relative;
+  padding-bottom: 20px; /* Add space for the border */
+  margin-bottom: 20px; /* Add space between list items */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.name {
+  margin: 0 0 20px 0;
+}
+.price {
+  color: red;
+}
+.amount {
+  margin: 20px;
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.add,
+.remove {
+  border: 1px solid grey;
+  border-radius: 5px;
+  padding: 5px 20px;
+  font-weight: bold;
+  font-size: larger;
+  margin: 5px;
+}
+.add:hover,.remove:hover{
+    background-color: red;
+    color: white;
+}

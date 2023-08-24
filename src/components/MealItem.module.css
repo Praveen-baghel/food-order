@@ -1,0 +1,26 @@
+.mainLi:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background-color: #ccc; /* Border color */
+}
+.mainLi {
+  position: relative;
+  padding-bottom: 20px; /* Add space for the border */
+  margin-bottom: 20px; /* Add space between list items */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.description {
+  font-style: italic;
+}
+.price {
+  font-weight: bold;
+  color: red;
+  font-size: 25px;
+  margin: 10px 0 0 0;
+}
