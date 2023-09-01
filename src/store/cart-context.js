@@ -64,7 +64,7 @@ const getItems = () => {
 };
 
 const CartProvider = (props) => {
-  const [cartState, dispatchCart] = useReducer(cartReducer, getItems());
+  const [cartState, dispatchCart] = useReducer(cartReducer, defaultCart);
 
   const addItem = (item) => {
     dispatchCart({ type: "ADD", item: item });
@@ -79,9 +79,9 @@ const CartProvider = (props) => {
     addItem: addItem,
     removeItem: removeItem,
   };
-  useEffect(() => {
-    localStorage.setItem("items", JSON.stringify(cartState));
-  }, [cartState]);
+  // useEffect(() => {
+  //   localStorage.setItem("items", JSON.stringify(cartState));
+  // }, [cartState]);
   return (
     <CartContext.Provider value={cartContext}>
       {props.children}
