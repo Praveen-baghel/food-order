@@ -4,24 +4,41 @@ import classes from "./AvailableMeals.module.css";
 import { MealItem } from "./MealItem";
 
 export const AvailableMeals = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [meals, setMeals] = useState([]);
+  const [fetchError, setFetchError] = useState(false);
   useEffect(() => {
     const fetchMeals = async () => {
-      const response = await fetch(
-        "https://practice-database-6a346-default-rtdb.asia-southeast1.firebasedatabase.app/meals.json"
-      );
-      const responseData = await response.json();
-      const loadedMeals = [];
-      for (const key in responseData) {
-        loadedMeals.push({
-          id: key,
-          description: responseData[key].description,
-          name: responseData[key].name,
-          price: responseData[key].price,
+      function fetchDataWithTimeout(url) {
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => {
+            reject(new Error("Request timed out"));
+          }, 4000);
         });
+
+        return Promise.race([fetch(url), timeoutPromise]);
       }
 
-      setMeals(loadedMeals);
+      try {
+        const url =
+          "https://practice-database-6a346-default-rtdb.asia-southeast1.firebasedatabase.app/meals.json";
+        const response = await fetchDataWithTimeout(url);
+        const responseData = await response.json();
+        const loadedMeals = [];
+        for (const key in responseData) {
+          loadedMeals.push({
+            id: key,
+            description: responseData[key].description,
+            name: responseData[key].name,
+            price: responseData[key].price,
+          });
+        }
+        setMeals(loadedMeals);
+      } catch (error) {
+        setFetchError(true);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchMeals();
   }, []);
@@ -38,7 +55,13 @@ export const AvailableMeals = () => {
   });
   return (
     <WrapperCard>
-      <ul className={classes.Ul}>{availableMeals}</ul>
+      {isLoading ? (
+        <h2 className={classes.h2}>Loading...</h2>
+      ) : fetchError ? (
+        <h2 className={classes.h2}>Request Timed Out</h2>
+      ) : (
+        <ul className={classes.Ul}>{availableMeals}</ul>
+      )}
     </WrapperCard>
   );
 };
