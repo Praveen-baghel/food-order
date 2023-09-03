@@ -5,6 +5,7 @@ import { MealItem } from "./MealItem";
 
 export const AvailableMeals = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [timeError, setTimeError] = useState(false);
   const [meals, setMeals] = useState([]);
   const [fetchError, setFetchError] = useState(false);
   useEffect(() => {
@@ -35,7 +36,11 @@ export const AvailableMeals = () => {
         }
         setMeals(loadedMeals);
       } catch (error) {
-        setFetchError(true);
+        if (error.message === "Failed to fetch") {
+          setFetchError(true);
+        } else {
+          setTimeError(true);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -57,8 +62,10 @@ export const AvailableMeals = () => {
     <WrapperCard>
       {isLoading ? (
         <h2 className={classes.h2}>Loading...</h2>
-      ) : fetchError ? (
+      ) : timeError ? (
         <h2 className={classes.h2}>Request Timed Out</h2>
+      ) : fetchError ? (
+        <h2 className={classes.h2}>Failed To Fetch</h2>
       ) : (
         <ul className={classes.Ul}>{availableMeals}</ul>
       )}
