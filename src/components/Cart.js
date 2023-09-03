@@ -7,6 +7,8 @@ import { Checkout } from "./Checkout";
 
 export const Cart = (props) => {
   const [showCheckout, setShowCheckout] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [didSubmit, setDidSubmit] = useState(false);
   const cartCtx = useContext(CartContext);
   const amount = `$${cartCtx.totalAmount.toFixed(2)}`;
   const hasItems = cartCtx.items.length > 0;
@@ -15,6 +17,22 @@ export const Cart = (props) => {
   };
   const cartItemRemoveHandler = (id) => {
     cartCtx.removeItem(id);
+  };
+  const submitUserData = async (userData) => {
+    setIsSubmitting(true);
+    await fetch(
+      "https://practice-database-6a346-default-rtdb.asia-southeast1.firebasedatabase.app/order.json",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          user: userData,
+          order: cartCtx.items,
+        }),
+      }
+    );
+    setIsSubmitting(false);
+    setDidSubmit(true);
+    cartCtx.resetCart();
   };
   const cartItems = (
     <ul className={classes.cartUl}>
@@ -32,14 +50,17 @@ export const Cart = (props) => {
       })}
     </ul>
   );
-  return (
-    <Modal cartHide={props.cartHide}>
+
+  const modalContent = (
+    <>
       {cartItems}
       <div className={classes.amount}>
         <span>Total Amount</span>
         <span>{amount}</span>
       </div>
-      {showCheckout && <Checkout close={props.cartHide} />}
+      {showCheckout && (
+        <Checkout onConfirm={submitUserData} close={props.cartHide} />
+      )}
       {!showCheckout && (
         <div className={classes.btns}>
           <button className={classes.close} onClick={props.cartHide}>
@@ -55,6 +76,13 @@ export const Cart = (props) => {
           )}
         </div>
       )}
+    </>
+  );
+  return (
+    <Modal cartHide={props.cartHide}>
+      {!isSubmitting && !didSubmit && modalContent}
+      {isSubmitting && <p>Submitting...</p>}
+      {!isSubmitting && didSubmit && <p>Submitted successfully</p>}
     </Modal>
   );
 };

@@ -1,6 +1,12 @@
 import React, { useReducer } from "react";
 
-export const CartContext = React.createContext();
+export const CartContext = React.createContext({
+  items: [],
+  totalAmount: 0,
+  addItem: (item) => {},
+  removeItem: (id) => {},
+  resetCart: () => {},
+});
 
 const defaultCart = {
   items: [],
@@ -49,6 +55,9 @@ const cartReducer = (state, action) => {
       totalAmount: Math.abs(updatedAmount),
     };
   }
+  if (action.type === "RESET") {
+    return defaultCart;
+  }
   return defaultCart;
 };
 
@@ -73,11 +82,15 @@ const CartProvider = (props) => {
   const removeItem = (id) => {
     dispatchCart({ type: "REMOVE", id: id });
   };
+  const resetCart = () => {
+    dispatchCart({ type: "RESET" });
+  };
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItem,
     removeItem: removeItem,
+    resetCart: resetCart,
   };
   // useEffect(() => {
   //   localStorage.setItem("items", JSON.stringify(cartState));
