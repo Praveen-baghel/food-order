@@ -21,8 +21,7 @@ export const AvailableMeals = () => {
       }
 
       try {
-        const url =
-          "https://practice-database-6a346-default-rtdb.asia-southeast1.firebasedatabase.app/meals.json";
+        const url = process.env.REACT_APP_URL;
         const response = await fetchDataWithTimeout(url);
         const responseData = await response.json();
         const loadedMeals = [];
